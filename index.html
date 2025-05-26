@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Stadtradeln Präsentation</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin:0; padding:0; }
+    h1 { text-align: center; padding: 20px 0; background:#eee; margin:0; }
+    section { padding:20px; border-bottom:1px solid #ccc; }
+    .slider { position:relative; max-width:600px; margin:20px auto; overflow:hidden; }
+    .slider img { width:100%; display:none; }
+    .slider img.active { display:block; }
+    .slider .prev, .slider .next {
+      position:absolute; top:50%; transform:translateY(-50%);
+      background:rgba(0,0,0,0.5); color:#fff; padding:8px; cursor:pointer;
+      user-select:none;
+    }
+    .slider .prev { left:10px; }
+    .slider .next { right:10px; }
+  </style>
+</head>
+<body>
+  <h1>Erlebnisse beim Stadtradeln</h1>
+
+  <section>
+    <h2>Erster Tag</h2>
+    <div class="strava">
+      <!-- Beispiel für Strava-Einbettung, Activity-ID anpassen -->
+      <iframe src="https://www.strava.com/activities/123456789/embed" frameborder="0" width="100%" height="405" allowfullscreen></iframe>
+    </div>
+    <div class="textblock">
+      <p>Beschreibung des ersten Tages.</p>
+    </div>
+    <div class="slider" data-slider>
+      <!-- Bilder hier einfügen -->
+      <div class="prev" data-prev>&#10094;</div>
+      <div class="next" data-next>&#10095;</div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Zweiter Tag</h2>
+    <div class="strava">
+      <!-- Weitere Strava-Aktivität einbetten -->
+      <iframe src="https://www.strava.com/activities/987654321/embed" frameborder="0" width="100%" height="405" allowfullscreen></iframe>
+    </div>
+    <div class="textblock">
+      <p>Beschreibung des zweiten Tages.</p>
+    </div>
+    <div class="slider" data-slider>
+      <!-- Bilder hier einfügen -->
+      <div class="prev" data-prev>&#10094;</div>
+      <div class="next" data-next>&#10095;</div>
+    </div>
+  </section>
+
+<script>
+  document.querySelectorAll('[data-slider]').forEach(function(slider){
+    var images = slider.querySelectorAll('img');
+    var prev = slider.querySelector('[data-prev]');
+    var next = slider.querySelector('[data-next]');
+    if(images.length === 0){
+      if(prev) prev.style.display = 'none';
+      if(next) next.style.display = 'none';
+      return;
+    }
+    var index = 0;
+    function show(i){
+      images.forEach(function(img, idx){
+        img.classList.toggle('active', idx === i);
+      });
+    }
+    prev.addEventListener('click', function(){
+      index = (index - 1 + images.length) % images.length;
+      show(index);
+    });
+    next.addEventListener('click', function(){
+      index = (index + 1) % images.length;
+      show(index);
+    });
+    var startX = 0;
+    slider.addEventListener('touchstart', function(e){
+      startX = e.touches[0].clientX;
+    });
+    slider.addEventListener('touchend', function(e){
+      var diff = e.changedTouches[0].clientX - startX;
+      if(diff > 30){
+        index = (index - 1 + images.length) % images.length;
+        show(index);
+      } else if(diff < -30){
+        index = (index + 1) % images.length;
+        show(index);
+      }
+    });
+  });
+</script>
+</body>
+</html>
